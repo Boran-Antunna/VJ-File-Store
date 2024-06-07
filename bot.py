@@ -116,3 +116,35 @@ if __name__ == '__main__':
 # Don't Remove Credit Tg - @VJ_Botz
 # Subscribe YouTube Channel For Amazing Bot https://youtube.com/@Tech_VJ
 # Ask Doubt on telegram @KingVJ01
+
+from pyrogram import Client, filters, errors
+
+app = Client("my_bot")
+
+@app.on_message(filters.command("forward") & filters.private)
+async def forward_handler(client, message):
+    target_chat_id = -1002213410383  # Example chat ID
+    
+    try:
+        # Resolve the peer to ensure the ID is valid
+        peer = await client.resolve_peer(target_chat_id)
+        
+        # Send a message to the resolved peer
+        await client.send_message(
+            chat_id=peer,
+            text="Hello, World!"
+        )
+    except errors.ChatAdminRequired:
+        await message.reply("Bot does not have the required admin privileges in the target chat.")
+    except errors.BadRequest as e:
+        await message.reply(f"BadRequest: {e}")
+    except errors.PeerIdInvalid:
+        await message.reply("Invalid peer ID provided.")
+    except KeyError as e:
+        await message.reply(f"KeyError: {e}")
+    except ValueError as e:
+        await message.reply(f"ValueError: {e}")
+    except Exception as e:
+        await message.reply(f"An unexpected error occurred: {e}")
+
+app.run()
